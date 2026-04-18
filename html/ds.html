@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DS Emulator</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+    #game { width: 100vw; height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="game"></div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const rom = params.get('rom');
+    if (!rom) {
+      document.body.innerHTML = '<p style="color:red;font-family:Arial;padding:20px;">No ROM specified. Add ?rom=filename.nds to the URL.</p>';
+    } else {
+      // Load EmulatorJS
+      window.EJS_player = '#game';
+      window.EJS_core = 'nds';
+      window.EJS_gameUrl = rom;
+      window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+      window.EJS_startOnLoaded = true;
+
+      const script = document.createElement('script');
+      script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+      document.body.appendChild(script);
+    }
+  </script>
+</body>
+</html>
