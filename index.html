@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>the big fat rat</title>
-  <link href="" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -78,7 +77,6 @@
       margin-bottom: 8px;
       border-bottom: 1px solid #222;
       padding-bottom: 5px;
-      text-transform: none;
     }
 
     .panel-content {
@@ -91,7 +89,6 @@
     .panel-content .yellow { color: #c8b400; }
     .panel-content .white { color: #ccc; }
 
-    /* Game selection item */
     .game-item {
       color: #00c853;
       font-size: 11px;
@@ -100,9 +97,20 @@
       background: #0d1a0d;
       cursor: pointer;
       margin-top: 4px;
+      transition: background 0.15s, border-color 0.15s;
     }
 
-    /* Options panel buttons */
+    .game-item:hover {
+      background: #112211;
+      border-color: #00c853;
+    }
+
+    .game-item.selected {
+      background: #0d2a0d;
+      border-color: #00c853;
+      color: #fff;
+    }
+
     .btn {
       display: block;
       width: 100%;
@@ -136,7 +144,7 @@
     </div>
 
     <div class="grid">
-      <!-- Top Left: Hack Information -->
+      <!-- Top Left: Game Information -->
       <div class="panel">
         <div class="panel-title">Game information</div>
         <div class="panel-content">
@@ -148,16 +156,17 @@
         </div>
       </div>
 
-      <!-- Top Right: Hack Selection -->
+      <!-- Top Right: Game Selection -->
       <div class="panel">
         <div class="panel-title">Game selection</div>
-        <div class="game-item">eagle minecraft craft</div>
+        <div class="game-item selected" onclick="selectGame(this, 'html/EaglercraftX_1.8_u53_Offline_Signed.html')">eagle minecraft craft</div>
+        <div class="game-item" onclick="selectGame(this, 'html/doom.html')">Doom</div>
       </div>
 
       <!-- Bottom Left: Options -->
       <div class="panel">
         <div class="panel-title">Options</div>
-        <button class="btn" onclick="window.location.href='EaglercraftX_1.8_u53_Offline_Signed.html'">Load game</button>
+        <button class="btn" onclick="loadGame()">Load game</button>
         <button class="btn" onclick="window.close()">Exit</button>
       </div>
 
@@ -179,10 +188,23 @@
     document.getElementById('today-date').textContent =
       months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
 
-    // Try to get username from URL param e.g. ?user=Logan
+    // Username from URL param
     const params = new URLSearchParams(window.location.search);
     const user = params.get('user');
     if (user) document.getElementById('username').textContent = user;
+
+    // Game selection
+    let selectedPath = 'html/EaglercraftX_1.8_u53_Offline_Signed.html';
+
+    function selectGame(el, path) {
+      document.querySelectorAll('.game-item').forEach(i => i.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedPath = path;
+    }
+
+    function loadGame() {
+      window.location.href = selectedPath;
+    }
   </script>
 </body>
 </html>
