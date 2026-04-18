@@ -6,8 +6,9 @@
   <script src="https://unpkg.com/@ruffle-rs/ruffle@0.1.0-nightly.2024.1.25"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    #flash-container { width: 800px; height: 600px; }
+    body { background: #000; overflow: hidden; }
+    #flash-container { width: 100vw; height: 100vh; }
+    #flash-container ruffle-player { width: 100% !important; height: 100% !important; }
   </style>
 </head>
 <body>
@@ -18,9 +19,12 @@
       const player = ruffle.createPlayer();
       const container = document.getElementById("flash-container");
       container.appendChild(player);
-      player.style.width = "800px";
-      player.style.height = "600px";
-      player.load("impossiblequiz.swf");
+      player.style.width = "100vw";
+      player.style.height = "100vh";
+      player.load({
+        url: "impossiblequiz.swf",
+        scale: "exactFit"
+      });
     });
   </script>
 </body>
