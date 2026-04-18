@@ -68,6 +68,7 @@
       background: #111;
       padding: 10px 12px;
       min-height: 110px;
+      height: 130px;
     }
 
     .panel-title {
@@ -89,6 +90,17 @@
     .panel-content .yellow { color: #c8b400; }
     .panel-content .white { color: #ccc; }
 
+    .game-list {
+      height: 90px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #00c853 #0d1a0d;
+    }
+
+    .game-list::-webkit-scrollbar { width: 4px; }
+    .game-list::-webkit-scrollbar-track { background: #0d1a0d; }
+    .game-list::-webkit-scrollbar-thumb { background: #00c853; }
+
     .game-item {
       color: #00c853;
       font-size: 11px;
@@ -99,6 +111,8 @@
       margin-top: 4px;
       transition: background 0.15s, border-color 0.15s;
     }
+
+    .game-item:first-child { margin-top: 0; }
 
     .game-item:hover {
       background: #112211;
@@ -159,14 +173,16 @@
       <!-- Top Right: Game Selection -->
       <div class="panel">
         <div class="panel-title">Game selection</div>
-        <div class="game-item selected" onclick="selectGame(this, 'html/EaglercraftX_1.8_u53_Offline_Signed.html')">eagle minecraft craft</div>
-        <div class="game-item" onclick="selectGame(this, 'html/doom.html')">doom</div>
-        <div class="game-item" onclick="selectGame(this, 'html/fnae.html')">fnae</div>
-        <div class="game-item" onclick="selectGame(this, 'html/bitlife.html')">bitlife</div>
-        <div class="game-item" onclick="selectGame(this, 'html/geometrydash.html')">geo dash</div>
-        <div class="game-item" onclick="selectGame(this, 'html/portal.html')">portal</div>
-        <div class="game-item" onclick="selectGame(this, 'html/slope.html')">slop</div>
-        <div class="game-item" onclick="selectGame(this, 'html/supermario64.html')">super mario 64</div>
+        <div class="game-list">
+          <div class="game-item selected" onclick="selectGame(this, 'html/EaglercraftX_1.8_u53_Offline_Signed.html')">eagle minecraft craft</div>
+          <div class="game-item" onclick="selectGame(this, 'html/doom.html')">doom</div>
+          <div class="game-item" onclick="selectGame(this, 'html/fnae.html')">fnae</div>
+          <div class="game-item" onclick="selectGame(this, 'html/bitlife.html')">bitlife</div>
+          <div class="game-item" onclick="selectGame(this, 'html/geometrydash.html')">geo dash</div>
+          <div class="game-item" onclick="selectGame(this, 'html/portal.html')">portal</div>
+          <div class="game-item" onclick="selectGame(this, 'html/slope.html')">slop</div>
+          <div class="game-item" onclick="selectGame(this, 'html/supermario64.html')">super mario 64</div>
+        </div>
       </div>
 
       <!-- Bottom Left: Options -->
@@ -188,18 +204,15 @@
   </div>
 
   <script>
-    // Today's date
     const now = new Date();
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     document.getElementById('today-date').textContent =
       months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
 
-    // Username from URL param
     const params = new URLSearchParams(window.location.search);
     const user = params.get('user');
     if (user) document.getElementById('username').textContent = user;
 
-    // Game selection
     let selectedPath = 'html/EaglercraftX_1.8_u53_Offline_Signed.html';
 
     function selectGame(el, path) {
