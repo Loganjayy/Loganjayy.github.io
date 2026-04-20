@@ -43,7 +43,6 @@
       box-shadow: 0 0 40px rgba(0,0,0,0.8);
     }
 
-    /* Left tab sidebar */
     .tabs {
       display: flex;
       flex-direction: column;
@@ -75,7 +74,6 @@
       background: rgba(0,200,83,0.05);
     }
 
-    /* Main panel */
     .main { width: 480px; }
 
     .titlebar {
@@ -148,14 +146,8 @@
     }
 
     .game-item:first-child { margin-top: 0; }
-
     .game-item:hover { background: #112211; border-color: #00c853; }
-
-    .game-item.selected {
-      background: #0d2a0d;
-      border-color: #00c853;
-      color: #fff;
-    }
+    .game-item.selected { background: #0d2a0d; border-color: #00c853; color: #fff; }
 
     .btn {
       display: block;
@@ -176,7 +168,6 @@
     .btn:hover { background: #252525; border-color: #00c853; color: #00c853; }
     .btn:first-of-type { margin-top: 14px; }
 
-    /* Tab content sections */
     .tab-content { display: none; }
     .tab-content.active { display: block; }
   </style>
@@ -189,7 +180,6 @@
 
   <div class="window">
 
-    <!-- Left vertical tabs -->
     <div class="tabs">
       <div class="tab active" onclick="switchTab('games', this)">Games</div>
       <div class="tab" onclick="switchTab('emulation', this)">Emulation</div>
@@ -251,11 +241,9 @@
         <div class="grid">
           <div class="panel">
             <div class="panel-title">Emulator information</div>
-            <div class="panel-content">
+            <div class="panel-content" id="emu-info">
               <span class="white">Flash (SWF)</span><br>
               <span class="green">Powered by Ruffle</span>
-              <br><br>
-              <span style="color:#555">More emulators<br>coming soon</span>
             </div>
           </div>
 
@@ -265,10 +253,9 @@
               <div class="game-item selected" onclick="selectGame(this, 'html/impossiblequiz.html')">the impossible quiz</div>
             </div>
             <div class="game-list" id="emu-games-emulatorjs" style="display:none;">
-              <!-- Add DS games here like: -->
-              <!-- <div class="game-item" onclick="selectGame(this, 'html/ds.html?rom=mario.nds')">mario</div> -->
-              <div class="game-item selected" onclick="selectGame(this, 'html/ds.html?rom=game.nds')">no games yet - add .nds files</div>
-              <div class="game-item selected" onclick="selectGame(this, 'html/ds.html?rom=https://github.com/Loganjayy/Loganjayy.github.io/releases/download/tug/nsmb.nds')">New Super Mario Bros DS</div>
+              <div class="game-item selected" onclick="selectGame(this, 'html/gba.html?rom=emerald.gba')">Pokemon Emerald</div>
+              <div class="game-item" onclick="selectGame(this, 'html/gba.html?rom=firered.gba')">Pokemon Fire Red</div>
+              <div class="game-item" onclick="selectGame(this, 'html/gba.html?rom=leafgreen.gba')">Pokemon Leaf Green</div>
             </div>
           </div>
 
@@ -284,7 +271,7 @@
               <span style="color:#aaa;font-size:10px;">Select emulator</span><br>
               <div class="game-list" style="height:52px;">
                 <div class="game-item selected" id="emu-ruffle" onclick="selectEmulator(this, 'ruffle')">Ruffle (Flash)</div>
-                <div class="game-item" id="emu-emulatorjs" onclick="selectEmulator(this, 'emulatorjs')">EmulatorJS (DS)</div>
+                <div class="game-item" id="emu-emulatorjs" onclick="selectEmulator(this, 'emulatorjs')">EmulatorJS (GBA)</div>
               </div>
             </div>
           </div>
@@ -323,15 +310,24 @@
     let selectedEmulator = 'ruffle';
 
     function selectEmulator(el, emu) {
-      document.querySelectorAll('#tab-emulation #emu-ruffle, #tab-emulation #emu-emulatorjs').forEach(i => i.classList.remove('selected'));
+      document.querySelectorAll('#emu-ruffle, #emu-emulatorjs').forEach(i => i.classList.remove('selected'));
       el.classList.add('selected');
       selectedEmulator = emu;
-      // swap game lists
+
       document.getElementById('emu-games-ruffle').style.display = emu === 'ruffle' ? 'block' : 'none';
       document.getElementById('emu-games-emulatorjs').style.display = emu === 'emulatorjs' ? 'block' : 'none';
-      // select first item in the shown list
+
+      // Update info panel
+      const info = document.getElementById('emu-info');
+      if (emu === 'ruffle') {
+        info.innerHTML = '<span class="white">Flash (SWF)</span><br><span class="green">Powered by Ruffle</span>';
+      } else {
+        info.innerHTML = '<span class="white">GBA</span><br><span class="green">Powered by EmulatorJS</span>';
+      }
+
       const first = document.querySelector('#emu-games-' + emu + ' .game-item');
       if (first) {
+        document.querySelectorAll('.game-item').forEach(i => i.classList.remove('selected'));
         first.classList.add('selected');
         selectedPath = first.getAttribute('onclick').match(/'([^']+)'/)[1];
       }
@@ -342,7 +338,6 @@
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       el.classList.add('active');
       document.getElementById('tab-' + name).classList.add('active');
-      // reset selected game to first item of new tab
       const first = document.querySelector('#tab-' + name + ' .game-item');
       if (first) {
         document.querySelectorAll('.game-item').forEach(i => i.classList.remove('selected'));
