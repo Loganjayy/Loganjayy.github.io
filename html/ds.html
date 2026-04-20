@@ -1,4 +1,4 @@
-#<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,32 +6,80 @@
   <title>DS Emulator</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; color: #fff; font-family: Arial, sans-serif; }
-    #game { width: 100vw; height: 100vh; }
+    body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; color: #00c853; font-family: Arial, sans-serif; flex-direction: column; gap: 12px; }
+    #game { width: 100vw; height: 100vh; display: none; }
+    #status { font-size: 13px; }
+    #bar-wrap { width: 300px; height: 6px; background: #222; border-radius: 3px; }
+    #bar { height: 6px; background: #00c853; border-radius: 3px; width: 0%; transition: width 0.2s; }
   </style>
 </head>
 <body>
+  <div id="loading">
+    <div id="status">Fetching ROM...</div>
+    <div id="bar-wrap"><div id="bar"></div></div>
+  </div>
   <div id="game"></div>
   <script>
     const params = new URLSearchParams(window.location.search);
     const rom = params.get('rom');
+
     if (!rom) {
-      document.body.innerHTML = '<p style="color:red;padding:20px;">No ROM specified.</p>';
+      document.getElementById('status').textContent = 'No ROM specified.';
     } else {
-      // Use corsproxy.io to bypass CORS
-      const proxiedRom = 'https://corsproxy.io/?' + encodeURIComponent(rom);
- 
-      window.EJS_player = '#game';
-      window.EJS_core = 'nds';
-      window.EJS_gameUrl = proxiedRom;
-      window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-      window.EJS_startOnLoaded = true;
- 
-      const script = document.createElement('script');
-      script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-      document.body.appendChild(script);
+      const proxies = [
+        'https://corsproxy.io/?' + encodeURIComponent(rom),
+        'https://api.allorigins.win/raw?url=' + encodeURIComponent(rom),
+        rom // try direct last
+      ];
+
+      async function tryFetch(urls, index = 0) {
+        if (index >= urls.length) {
+          document.getElementById('status').textContent = 'Failed to load ROM. All sources failed.';
+          return;
+        }
+        try {
+          document.getElementById('status').textContent = 'Downloading ROM... (attempt ' + (index + 1) + ')';
+          const res = await fetch(urls[index]);
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+
+          const reader = res.body.getReader();
+          const total = +res.headers.get('Content-Length') || 0;
+          let received = 0;
+          const chunks = [];
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            chunks.push(value);
+            received += value.length;
+            if (total) document.getElementById('bar').style.width = (received / total * 100) + '%';
+            document.getElementById('status').textContent = 'Downloading... ' + (total ? Math.round(received/total*100) + '%' : Math.round(received/1024/1024) + 'MB');
+          }
+
+          const blob = new Blob(chunks);
+          const blobUrl = URL.createObjectURL(blob);
+
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('game').style.display = 'block';
+
+          window.EJS_player = '#game';
+          window.EJS_core = 'nds';
+          window.EJS_gameUrl = blobUrl;
+          window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+          window.EJS_startOnLoaded = true;
+
+          const script = document.createElement('script');
+          script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+          document.body.appendChild(script);
+
+        } catch (e) {
+          console.warn('Proxy ' + index + ' failed:', e);
+          tryFetch(urls, index + 1);
+        }
+      }
+
+      tryFetch(proxies);
     }
   </script>
 </body>
 </html>
- 
