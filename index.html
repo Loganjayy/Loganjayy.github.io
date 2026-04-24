@@ -360,7 +360,27 @@
     <video id="skeet-video" src="skeet.mp4" style="width:100vw;height:100vh;object-fit:fill;" autoplay onclick="this.closest('#video-overlay').style.display='none'"></video>
   </div>
 
-  <a href="https://yewtu.be" target="_blank" style="position:fixed;bottom:10px;left:10px;z-index:999;background:#111;border:1px solid #2a2a2a;color:#555;font-family:Arial,sans-serif;font-size:9px;padding:3px 7px;text-decoration:none;letter-spacing:0.05em;transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#00c853';this.style.borderColor='#00c853'" onmouseout="this.style.color='#555';this.style.borderColor='#2a2a2a'">yewtu.be</a>
+  <div id="yu-popup" style="display:none;position:fixed;bottom:32px;left:10px;z-index:9999;background:#111;border:1px solid #2a2a2a;padding:8px;box-shadow:0 0 20px rgba(0,0,0,0.8);">
+    <div style="font-size:9px;color:#555;letter-spacing:0.1em;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #222;">SELECT INSTANCE</div>
+    <a href="https://inv.nadeko.net/feed/popular" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">inv.nadeko.net</a>
+    <a href="https://invidious.nerdvpn.de/" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">invidious.nerdvpn.de</a>
+    <a href="https://docs.invidious.io/instances/" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">all instances</a>
+    <a href="https://yt.chocolatemoo53.com/" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">yt.chocolatemoo53.com</a>
+  </div>
+  <button onclick="toggleYu()" style="position:fixed;bottom:10px;left:10px;z-index:9999;background:#111;border:1px solid #2a2a2a;color:#555;font-family:Arial,sans-serif;font-size:9px;padding:3px 7px;cursor:pointer;letter-spacing:0.05em;transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#00c853';this.style.borderColor='#00c853'" onmouseout="this.style.color='#555';this.style.borderColor='#2a2a2a'">yu</button>
+  <script>
+    function toggleYu() {
+      const popup = document.getElementById('yu-popup');
+      popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+    }
+    document.addEventListener('click', (e) => {
+      const popup = document.getElementById('yu-popup');
+      if (!e.target.closest('#yu-popup') && !e.target.closest('button[onclick="toggleYu()"]')) {
+        popup.style.display = 'none';
+      }
+    });
+  </script>
+
   <script>
     function checkPassword() {
       const input = document.getElementById('pw-input').value;
