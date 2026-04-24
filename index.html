@@ -290,7 +290,6 @@
             <div class="panel-title">Game selection</div>
             <div class="game-list" id="emu-games-ruffle">
               <div class="game-item selected" onclick="selectGame(this, 'html/impossiblequiz.html')">the impossible quiz</div>
-              <div class="game-item" onclick="selectGame(this, 'html/supermario63.html')">Super Mario 63</div>
             </div>
             <div class="game-list" id="emu-games-emulatorjs" style="display:none;">
               <div class="game-item selected" onclick="selectGame(this, 'html/gba.html?rom=emerald.gba')">Pokemon Emerald</div>
@@ -412,6 +411,16 @@
   </script>
 
   <script>
+    // 10% chance popup
+    if (Math.random() < 0.1) {
+      setTimeout(() => {
+        const popup = document.createElement('div');
+        popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:#111;border:1px solid #2a2a2a;padding:16px 20px;font-family:Arial,sans-serif;font-size:11px;color:#ccc;box-shadow:0 0 40px rgba(0,0,0,0.9);text-align:center;max-width:280px;';
+        popup.innerHTML = '<div style="font-size:10px;letter-spacing:0.1em;color:#c8b400;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #222;">⚠ DID YOU KNOW</div><div style="color:#777;line-height:1.6;">On line 209 of the code you can see the password in plaintext?</div><button onclick="this.parentElement.remove()" style="margin-top:12px;background:#1e1e1e;border:1px solid #333;color:#ccc;font-family:Arial,sans-serif;font-size:10px;padding:4px 12px;cursor:pointer;letter-spacing:0.05em;">dismiss</button>';
+        document.body.appendChild(popup);
+      }, 1500);
+    }
+
     function checkPassword() {
       const input = document.getElementById('pw-input').value;
       if (input === 'password') {
