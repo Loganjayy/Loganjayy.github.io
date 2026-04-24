@@ -183,6 +183,61 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
+    /* Fade in window */
+    @keyframes fadeInWindow {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .window {
+      animation: fadeInWindow 0.4s ease forwards;
+    }
+
+    /* CRT scanlines */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 99997;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.08) 3px,
+        rgba(0,0,0,0.08) 4px
+      );
+    }
+
+    /* Password connecting animation */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .pw-connecting {
+      font-size: 11px;
+      color: #00c853;
+      letter-spacing: 0.08em;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .pw-connecting span {
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes pwFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #pw-box {
+      animation: pwFadeIn 0.5s ease 1.2s both;
+    }
+
+    #pw-connecting-msg {
+      animation: pwFadeIn 0.3s ease forwards;
+    }
+
     /* iPad / touch responsive */
     @media (max-width: 600px) {
       .window { flex-direction: column; width: 100vw; min-height: 100vh; border: none; }
@@ -202,8 +257,11 @@
 </head>
 <body>
 
-  <div id="password-overlay" style="position:fixed;inset:0;z-index:99998;background:#0a0b0a;display:flex;align-items:center;justify-content:center;">
-    <div style="background:#111;border:1px solid #2a2a2a;padding:24px;width:280px;box-shadow:0 0 40px rgba(0,0,0,0.8);">
+  <div class="scanlines"></div>
+
+  <div id="password-overlay" style="position:fixed;inset:0;z-index:99998;background:#0a0b0a;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;">
+    <div id="pw-connecting-msg" class="pw-connecting">connecting to bigrat.monster<span>_</span></div>
+    <div id="pw-box" style="background:#111;border:1px solid #2a2a2a;padding:24px;width:280px;box-shadow:0 0 40px rgba(0,0,0,0.8);">
       <div style="font-size:10px;letter-spacing:0.1em;color:#ccc;margin-bottom:16px;padding-bottom:6px;border-bottom:1px solid #222;">Authentication required</div>
       <div style="font-size:11px;color:#555;margin-bottom:8px;">Enter password to continue</div>
       <input id="pw-input" type="password" placeholder="password" style="width:100%;background:#0d0d0d;border:1px solid #2a2a2a;color:#00c853;font-family:Arial,sans-serif;font-size:11px;padding:7px 8px;outline:none;margin-bottom:8px;letter-spacing:0.1em;" onkeydown="if(event.key==='Enter')checkPassword()">
@@ -290,7 +348,6 @@
             <div class="panel-title">Game selection</div>
             <div class="game-list" id="emu-games-ruffle">
               <div class="game-item selected" onclick="selectGame(this, 'html/impossiblequiz.html')">the impossible quiz</div>
-              <div class="game-item" onclick="selectGame(this, 'html/supermario63.html')">Super Mario 63</div>
             </div>
             <div class="game-list" id="emu-games-emulatorjs" style="display:none;">
               <div class="game-item selected" onclick="selectGame(this, 'html/gba.html?rom=emerald.gba')">Pokemon Emerald</div>
@@ -425,7 +482,10 @@
     function checkPassword() {
       const input = document.getElementById('pw-input').value;
       if (input === 'password') {
-        document.getElementById('password-overlay').style.display = 'none';
+        const overlay = document.getElementById('password-overlay');
+        overlay.style.transition = 'opacity 0.4s ease';
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.style.display = 'none', 400);
       } else {
         document.getElementById('pw-error').style.display = 'block';
         document.getElementById('pw-input').value = '';
