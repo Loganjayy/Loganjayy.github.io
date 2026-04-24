@@ -41,6 +41,27 @@
       background: #111;
       border: 1px solid #2a2a2a;
       box-shadow: 0 0 40px rgba(0,0,0,0.8);
+      animation: fadeInWindow 0.4s ease forwards;
+    }
+
+    @keyframes fadeInWindow {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* CRT scanlines */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 99997;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.08) 3px,
+        rgba(0,0,0,0.08) 4px
+      );
     }
 
     .tabs {
@@ -183,31 +204,6 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* Fade in window */
-    @keyframes fadeInWindow {
-      from { opacity: 0; transform: scale(0.97); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .window {
-      animation: fadeInWindow 0.4s ease forwards;
-    }
-
-    /* CRT scanlines */
-    .scanlines {
-      position: fixed;
-      inset: 0;
-      z-index: 99997;
-      pointer-events: none;
-      background: repeating-linear-gradient(
-        to bottom,
-        transparent 0px,
-        transparent 3px,
-        rgba(0,0,0,0.08) 3px,
-        rgba(0,0,0,0.08) 4px
-      );
-    }
-
-    /* iPad / touch responsive */
     @media (max-width: 600px) {
       .window { flex-direction: column; width: 100vw; min-height: 100vh; border: none; }
       .tabs { flex-direction: row; border-right: none; border-bottom: 1px solid #2a2a2a; padding: 0; overflow-x: auto; }
@@ -227,6 +223,52 @@
 <body>
 
   <div class="scanlines"></div>
+
+  <div id="rat-overlay" style="display:none;position:fixed;inset:0;z-index:9999;cursor:pointer;" onclick="this.style.display='none'" title="click to close">
+    <img src="https://bigrat.monster/media/bigrat.jpg" style="width:100vw;height:100vh;object-fit:fill;display:block;">
+  </div>
+
+  <div class="window">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('games', this)">Games</div>
+      <div class="tab" onclick="switchTab('emulation', this)">Emulation</div>
+    </div>
+
+    <div class="main">
+      <div class="titlebar">
+        <span>bigrat loader v1.0</span>
+        <span style="color:#555">[ x ]</span>
+      </div>
+      <div class="rainbow-bar"></div>
+
+      <!-- GAMES TAB -->
+      <div id="tab-games" class="tab-content active">
+        <div class="grid">
+          <div class="panel">
+            <div class="panel-title">Game information</div>
+            <div class="panel-content">
+              Updated on <span class="white" id="today-date"></span>
+              <br><br>
+              <strong style="color:#aaa">User information</strong><br>
+              Welcome back, <span class="white" id="username">Riley Armstrong Lewis</span><br>
+              <span class="green">Sub expires in 9e+26 days</span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">Game selection</div>
+            <div class="game-list">
+              <div class="game-item selected" onclick="selectGame(this, 'html/EaglercraftX_1.8_u53_Offline_Signed.html')">eagle minecraft craft</div>
+              <div class="game-item" onclick="selectGame(this, 'html/doom.html')">doom</div>
+              <div class="game-item" onclick="selectGame(this, 'html/fnae.html')">fnae</div>
+              <div class="game-item" onclick="selectGame(this, 'html/bitlife.html')">bitlife</div>
+              <div class="game-item" onclick="selectGame(this, 'html/geometrydash.html')">geo dash</div>
+              <div class="game-item" onclick="selectGame(this, 'html/portal.html')">portal</div>
+              <div class="game-item" onclick="selectGame(this, 'html/slope.html')">slop</div>
+              <div class="game-item" onclick="selectGame(this, 'html/supermario64.html')">super mario 64</div>
+              <div class="game-item" onclick="selectGame(this, 'html/baldi.html')">baldi (BROKEN)</div>
+            </div>
+          </div>
 
           <div class="panel">
             <div class="panel-title">Options</div>
@@ -259,6 +301,7 @@
             <div class="panel-title">Game selection</div>
             <div class="game-list" id="emu-games-ruffle">
               <div class="game-item selected" onclick="selectGame(this, 'html/impossiblequiz.html')">the impossible quiz</div>
+              <div class="game-item" onclick="selectGame(this, 'html/supermario63.html')">Super Mario 63</div>
             </div>
             <div class="game-list" id="emu-games-emulatorjs" style="display:none;">
               <div class="game-item selected" onclick="selectGame(this, 'html/gba.html?rom=emerald.gba')">Pokemon Emerald</div>
@@ -288,6 +331,19 @@
 
     </div>
   </div>
+
+  <div id="video-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#000;">
+    <video id="skeet-video" src="skeet.mp4" style="width:100vw;height:100vh;object-fit:fill;" autoplay onclick="document.getElementById('video-overlay').style.display='none'"></video>
+  </div>
+
+  <div id="yu-popup" style="display:none;position:fixed;bottom:32px;left:10px;z-index:9999;background:#111;border:1px solid #2a2a2a;padding:8px;box-shadow:0 0 20px rgba(0,0,0,0.8);">
+    <div style="font-size:9px;color:#555;letter-spacing:0.1em;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #222;">SELECT INSTANCE</div>
+    <a href="https://inv.nadeko.net/feed/popular" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">inv.nadeko.net</a>
+    <a href="https://invidious.nerdvpn.de/" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">invidious.nerdvpn.de</a>
+    <a href="https://docs.invidious.io/instances/" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">all instances</a>
+    <a href="https://yt.chocolatemoo53.com/" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">yt.chocolatemoo53.com</a>
+  </div>
+  <button onclick="toggleYu()" style="position:fixed;bottom:10px;left:10px;z-index:9999;background:#111;border:1px solid #2a2a2a;color:#555;font-family:Arial,sans-serif;font-size:9px;padding:3px 7px;cursor:pointer;letter-spacing:0.05em;transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#00c853';this.style.borderColor='#00c853'" onmouseout="this.style.color='#555';this.style.borderColor='#2a2a2a'">yu</button>
 
   <script>
     const now = new Date();
@@ -321,18 +377,14 @@
       document.querySelectorAll('#emu-ruffle, #emu-emulatorjs').forEach(i => i.classList.remove('selected'));
       el.classList.add('selected');
       selectedEmulator = emu;
-
       document.getElementById('emu-games-ruffle').style.display = emu === 'ruffle' ? 'block' : 'none';
       document.getElementById('emu-games-emulatorjs').style.display = emu === 'emulatorjs' ? 'block' : 'none';
-
-      // Update info panel
       const info = document.getElementById('emu-info');
       if (emu === 'ruffle') {
         info.innerHTML = '<span class="white">Flash (SWF)</span><br><span class="green">Powered by Ruffle</span>';
       } else {
         info.innerHTML = '<span class="white">GBA</span><br><span class="green">Powered by EmulatorJS</span>';
       }
-
       const first = document.querySelector('#emu-games-' + emu + ' .game-item');
       if (first) {
         document.querySelectorAll('.game-item').forEach(i => i.classList.remove('selected'));
@@ -353,33 +405,30 @@
         selectedPath = first.getAttribute('onclick').match(/'([^']+)'/)[1];
       }
     }
-  </script>
-  <div id="video-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#000;">
-    <video id="skeet-video" src="skeet.mp4" style="width:100vw;height:100vh;object-fit:fill;" autoplay onclick="this.closest('#video-overlay').style.display='none'"></video>
-  </div>
 
-  <div id="yu-popup" style="display:none;position:fixed;bottom:32px;left:10px;z-index:9999;background:#111;border:1px solid #2a2a2a;padding:8px;box-shadow:0 0 20px rgba(0,0,0,0.8);">
-    <div style="font-size:9px;color:#555;letter-spacing:0.1em;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #222;">SELECT INSTANCE</div>
-    <a href="https://inv.nadeko.net/feed/popular" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">inv.nadeko.net</a>
-    <a href="https://invidious.nerdvpn.de/" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">invidious.nerdvpn.de</a>
-    <a href="https://docs.invidious.io/instances/" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">all instances</a>
-    <a href="https://yt.chocolatemoo53.com/" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">yt.chocolatemoo53.com</a>
-  </div>
-  <button onclick="toggleYu()" style="position:fixed;bottom:10px;left:10px;z-index:9999;background:#111;border:1px solid #2a2a2a;color:#555;font-family:Arial,sans-serif;font-size:9px;padding:3px 7px;cursor:pointer;letter-spacing:0.05em;transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#00c853';this.style.borderColor='#00c853'" onmouseout="this.style.color='#555';this.style.borderColor='#2a2a2a'">yu</button>
-  <script>
     function toggleYu() {
       const popup = document.getElementById('yu-popup');
       popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
     }
+
     document.addEventListener('click', (e) => {
       const popup = document.getElementById('yu-popup');
       if (!e.target.closest('#yu-popup') && !e.target.closest('button[onclick="toggleYu()"]')) {
         popup.style.display = 'none';
       }
     });
-  </script>
 
-  <script>
+    // 10% chance popup
+    if (Math.random() < 0.1) {
+      setTimeout(() => {
+        const popup = document.createElement('div');
+        popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:#111;border:1px solid #2a2a2a;padding:16px 20px;font-family:Arial,sans-serif;font-size:11px;color:#ccc;box-shadow:0 0 40px rgba(0,0,0,0.9);text-align:center;max-width:280px;';
+        popup.innerHTML = '<div style="font-size:10px;letter-spacing:0.1em;color:#c8b400;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #222;">⚠ DID YOU KNOW</div><div style="color:#777;line-height:1.6;">On line 209 of the code you can see the password in plaintext?</div><button onclick="this.parentElement.remove()" style="margin-top:12px;background:#1e1e1e;border:1px solid #333;color:#ccc;font-family:Arial,sans-serif;font-size:10px;padding:4px 12px;cursor:pointer;letter-spacing:0.05em;">dismiss</button>';
+        document.body.appendChild(popup);
+      }, 1500);
+    }
+
+    // Konami code
     const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
     let konamiIndex = 0;
     document.addEventListener('keydown', (e) => {
