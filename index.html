@@ -89,6 +89,18 @@
 
     .titlebar span { color: #00c853; }
 
+    .rainbow-bar {
+      height: 2px;
+      background: linear-gradient(90deg, #ff0000, #ff7700, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+      background-size: 200% 100%;
+      animation: rainbow 3s linear infinite;
+    }
+
+    @keyframes rainbow {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -212,6 +224,7 @@
     </div>
 
     <div class="main">
+      <div class="rainbow-bar"></div>
       <div class="titlebar">
         <span>bigrat loader v1.0</span>
         <span style="color:#555">[ x ]</span>
