@@ -207,37 +207,6 @@
       );
     }
 
-    /* Password connecting animation */
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    .pw-connecting {
-      font-size: 11px;
-      color: #00c853;
-      letter-spacing: 0.08em;
-      text-align: center;
-      margin-bottom: 12px;
-    }
-
-    .pw-connecting span {
-      animation: blink 0.8s infinite;
-    }
-
-    @keyframes pwFadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    #pw-box {
-      animation: pwFadeIn 0.5s ease 1.2s both;
-    }
-
-    #pw-connecting-msg {
-      animation: pwFadeIn 0.3s ease forwards;
-    }
-
     /* iPad / touch responsive */
     @media (max-width: 600px) {
       .window { flex-direction: column; width: 100vw; min-height: 100vh; border: none; }
@@ -258,64 +227,6 @@
 <body>
 
   <div class="scanlines"></div>
-
-  <div id="password-overlay" style="position:fixed;inset:0;z-index:99998;background:#0a0b0a;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;">
-    <div id="pw-connecting-msg" class="pw-connecting">connecting to bigrat.monster<span>_</span></div>
-    <div id="pw-box" style="background:#111;border:1px solid #2a2a2a;padding:24px;width:280px;box-shadow:0 0 40px rgba(0,0,0,0.8);">
-      <div style="font-size:10px;letter-spacing:0.1em;color:#ccc;margin-bottom:16px;padding-bottom:6px;border-bottom:1px solid #222;">Authentication required</div>
-      <div style="font-size:11px;color:#555;margin-bottom:8px;">Enter password to continue</div>
-      <input id="pw-input" type="password" placeholder="password" style="width:100%;background:#0d0d0d;border:1px solid #2a2a2a;color:#00c853;font-family:Arial,sans-serif;font-size:11px;padding:7px 8px;outline:none;margin-bottom:8px;letter-spacing:0.1em;" onkeydown="if(event.key==='Enter')checkPassword()">
-      <div id="pw-error" style="font-size:10px;color:#c85300;margin-bottom:8px;display:none;">incorrect password</div>
-      <button onclick="checkPassword()" style="width:100%;padding:7px 0;background:#1e1e1e;border:1px solid #333;color:#ccc;font-family:Arial,sans-serif;font-size:11px;cursor:pointer;letter-spacing:0.06em;transition:background 0.15s,border-color 0.15s;" onmouseover="this.style.borderColor='#00c853';this.style.color='#00c853'" onmouseout="this.style.borderColor='#333';this.style.color='#ccc'">Login</button>
-    </div>
-  </div>
-
-  <div id="rat-overlay" style="display:none;position:fixed;inset:0;z-index:9999;cursor:pointer;" onclick="this.style.display='none'" title="click to close">
-    <img src="https://bigrat.monster/media/bigrat.jpg" style="width:100vw;height:100vh;object-fit:fill;display:block;">
-  </div>
-
-  <div class="window">
-
-    <div class="tabs">
-      <div class="tab active" onclick="switchTab('games', this)">Games</div>
-      <div class="tab" onclick="switchTab('emulation', this)">Emulation</div>
-    </div>
-
-    <div class="main">
-      <div class="titlebar">
-        <span>bigrat loader v1.0</span>
-        <span style="color:#555">[ x ]</span>
-      </div>
-      <div class="rainbow-bar"></div>
-
-      <!-- GAMES TAB -->
-      <div id="tab-games" class="tab-content active">
-        <div class="grid">
-          <div class="panel">
-            <div class="panel-title">Game information</div>
-            <div class="panel-content">
-              Updated on <span class="white" id="today-date"></span>
-              <br><br>
-              <strong style="color:#aaa">User information</strong><br>
-              Welcome back, <span class="white" id="username">Riley Armstrong Lewis</span><br>
-              <span class="green">Sub expires in 9e+26 days</span>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="panel-title">Game selection</div>
-            <div class="game-list">
-              <div class="game-item selected" onclick="selectGame(this, 'html/EaglercraftX_1.8_u53_Offline_Signed.html')">eagle minecraft craft</div>
-              <div class="game-item" onclick="selectGame(this, 'html/doom.html')">doom</div>
-              <div class="game-item" onclick="selectGame(this, 'html/fnae.html')">fnae</div>
-              <div class="game-item" onclick="selectGame(this, 'html/bitlife.html')">bitlife</div>
-              <div class="game-item" onclick="selectGame(this, 'html/geometrydash.html')">geo dash</div>
-              <div class="game-item" onclick="selectGame(this, 'html/portal.html')">portal</div>
-              <div class="game-item" onclick="selectGame(this, 'html/slope.html')">slop</div>
-              <div class="game-item" onclick="selectGame(this, 'html/supermario64.html')">super mario 64</div>
-              <div class="game-item" onclick="selectGame(this, 'html/baldi.html')">baldi (BROKEN)</div>
-            </div>
-          </div>
 
           <div class="panel">
             <div class="panel-title">Options</div>
@@ -466,35 +377,6 @@
         popup.style.display = 'none';
       }
     });
-  </script>
-
-  <script>
-    // 10% chance popup
-    if (Math.random() < 0.1) {
-      setTimeout(() => {
-        const popup = document.createElement('div');
-        popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:#111;border:1px solid #2a2a2a;padding:16px 20px;font-family:Arial,sans-serif;font-size:11px;color:#ccc;box-shadow:0 0 40px rgba(0,0,0,0.9);text-align:center;max-width:280px;';
-        popup.innerHTML = '<div style="font-size:10px;letter-spacing:0.1em;color:#c8b400;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #222;">⚠ DID YOU KNOW</div><div style="color:#777;line-height:1.6;">On line 209 of the code you can see the password in plaintext?</div><button onclick="this.parentElement.remove()" style="margin-top:12px;background:#1e1e1e;border:1px solid #333;color:#ccc;font-family:Arial,sans-serif;font-size:10px;padding:4px 12px;cursor:pointer;letter-spacing:0.05em;">dismiss</button>';
-        document.body.appendChild(popup);
-      }, 1500);
-    }
-
-    function checkPassword() {
-      const input = document.getElementById('pw-input').value;
-      if (input === 'password') {
-        const overlay = document.getElementById('password-overlay');
-        overlay.style.transition = 'opacity 0.4s ease';
-        overlay.style.opacity = '0';
-        setTimeout(() => overlay.style.display = 'none', 400);
-      } else {
-        document.getElementById('pw-error').style.display = 'block';
-        document.getElementById('pw-input').value = '';
-        document.getElementById('pw-input').style.borderColor = '#c85300';
-        setTimeout(() => {
-          document.getElementById('pw-input').style.borderColor = '#2a2a2a';
-        }, 1000);
-      }
-    }
   </script>
 
   <script>
