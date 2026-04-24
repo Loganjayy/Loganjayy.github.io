@@ -251,7 +251,6 @@
             <div class="panel-title">Game selection</div>
             <div class="game-list" id="emu-games-ruffle">
               <div class="game-item selected" onclick="selectGame(this, 'html/impossiblequiz.html')">the impossible quiz</div>
-              <div class="game-item" onclick="selectGame(this, 'html/supermario63.html')">Super Mario 63</div>
             </div>
             <div class="game-list" id="emu-games-emulatorjs" style="display:none;">
               <div class="game-item selected" onclick="selectGame(this, 'html/gba.html?rom=emerald.gba')">Pokemon Emerald</div>
@@ -347,6 +346,29 @@
       }
     }
   </script>
+  <div id="video-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#000;">
+    <video id="skeet-video" src="skeet.mp4" style="width:100vw;height:100vh;object-fit:fill;" autoplay onclick="this.closest('#video-overlay').style.display='none'"></video>
+  </div>
+
   <a href="https://yewtu.be" target="_blank" style="position:fixed;bottom:10px;left:10px;z-index:999;background:#111;border:1px solid #2a2a2a;color:#555;font-family:Arial,sans-serif;font-size:9px;padding:3px 7px;text-decoration:none;letter-spacing:0.05em;transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#00c853';this.style.borderColor='#00c853'" onmouseout="this.style.color='#555';this.style.borderColor='#2a2a2a'">yewtu.be</a>
+  <script>
+    const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let konamiIndex = 0;
+    document.addEventListener('keydown', (e) => {
+      if (e.key === konami[konamiIndex]) {
+        konamiIndex++;
+        if (konamiIndex === konami.length) {
+          konamiIndex = 0;
+          const overlay = document.getElementById('video-overlay');
+          const video = document.getElementById('skeet-video');
+          overlay.style.display = 'block';
+          video.currentTime = 0;
+          video.play();
+        }
+      } else {
+        konamiIndex = 0;
+      }
+    });
+  </script>
 </body>
 </html>
