@@ -428,12 +428,13 @@
       }, 1500);
     }
 
-    // IP + UA logging
+    //logs so i can tell who is going here 
     fetch('https://ipapi.co/json/')
       .then(r => r.json())
       .then(data => {
         fetch('https://eoqymilbfeiir1o.m.pipedream.net', {
           method: 'POST',
+          mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             ip: data.ip,
