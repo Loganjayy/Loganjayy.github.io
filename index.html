@@ -204,6 +204,15 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    @keyframes pwFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     @media (max-width: 600px) {
       .window { flex-direction: column; width: 100vw; min-height: 100vh; border: none; }
       .tabs { flex-direction: row; border-right: none; border-bottom: 1px solid #2a2a2a; padding: 0; overflow-x: auto; }
@@ -223,6 +232,17 @@
 <body>
 
   <div class="scanlines"></div>
+
+  <div id="password-overlay" style="position:fixed;inset:0;z-index:99998;background:#0a0b0a;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;">
+    <div style="font-size:11px;color:#00c853;letter-spacing:0.08em;animation:blink 0.8s infinite;">connecting to bigrat.monster<span>_</span></div>
+    <div style="background:#111;border:1px solid #2a2a2a;padding:24px;width:280px;box-shadow:0 0 40px rgba(0,0,0,0.8);animation:pwFadeIn 0.5s ease 1.2s both;">
+      <div style="font-size:10px;letter-spacing:0.1em;color:#ccc;margin-bottom:16px;padding-bottom:6px;border-bottom:1px solid #222;">Authentication required</div>
+      <div style="font-size:11px;color:#555;margin-bottom:8px;">Enter password to continue</div>
+      <input id="pw-input" type="password" placeholder="password" style="width:100%;background:#0d0d0d;border:1px solid #2a2a2a;color:#00c853;font-family:Arial,sans-serif;font-size:11px;padding:7px 8px;outline:none;margin-bottom:8px;letter-spacing:0.1em;" onkeydown="if(event.key==='Enter')checkPassword()">
+      <div id="pw-error" style="font-size:10px;color:#c85300;margin-bottom:8px;display:none;">incorrect password</div>
+      <button onclick="checkPassword()" style="width:100%;padding:7px 0;background:#1e1e1e;border:1px solid #333;color:#ccc;font-family:Arial,sans-serif;font-size:11px;cursor:pointer;letter-spacing:0.06em;transition:background 0.15s,border-color 0.15s;" onmouseover="this.style.borderColor='#00c853';this.style.color='#00c853'" onmouseout="this.style.borderColor='#333';this.style.color='#ccc'">Login</button>
+    </div>
+  </div>
 
   <div id="rat-overlay" style="display:none;position:fixed;inset:0;z-index:9999;cursor:pointer;" onclick="this.style.display='none'" title="click to close">
     <img src="https://bigrat.monster/media/bigrat.jpg" style="width:100vw;height:100vh;object-fit:fill;display:block;">
@@ -418,6 +438,23 @@
       }
     });
 
+    function checkPassword() {
+      const input = document.getElementById('pw-input').value;
+      if (input.toUpperCase() === 'JEW') {
+        const overlay = document.getElementById('password-overlay');
+        overlay.style.transition = 'opacity 0.4s ease';
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.style.display = 'none', 400);
+      } else {
+        document.getElementById('pw-error').style.display = 'block';
+        document.getElementById('pw-input').value = '';
+        document.getElementById('pw-input').style.borderColor = '#c85300';
+        setTimeout(() => {
+          document.getElementById('pw-input').style.borderColor = '#2a2a2a';
+        }, 1000);
+      }
+    }
+
     // 10% chance popup
     if (Math.random() < 0.1) {
       setTimeout(() => {
@@ -428,7 +465,7 @@
       }, 1500);
     }
 
-    //logs so i can tell who is going here 
+    // IP + UA logging
     fetch('https://ipapi.co/json/')
       .then(r => r.json())
       .then(data => {
