@@ -49,7 +49,7 @@
       to { opacity: 1; transform: scale(1); }
     }
 
-    // crt lines
+    /* CRT scanlines */
     .scanlines {
       position: fixed;
       inset: 0;
@@ -234,7 +234,7 @@
   <div class="scanlines"></div>
 
   <div id="password-overlay" style="position:fixed;inset:0;z-index:99998;background:#0a0b0a;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;">
-    <div style="font-size:11px;color:#00c853;letter-spacing:0.08em;animation:blink 0.8s infinite;">put yo password in twin<span>_</span></div>
+    <div style="font-size:11px;color:#00c853;letter-spacing:0.08em;animation:blink 0.8s infinite;">connecting to bigrat.monster<span>_</span></div>
     <div style="background:#111;border:1px solid #2a2a2a;padding:24px;width:280px;box-shadow:0 0 40px rgba(0,0,0,0.8);animation:pwFadeIn 0.5s ease 1.2s both;">
       <div style="font-size:10px;letter-spacing:0.1em;color:#ccc;margin-bottom:16px;padding-bottom:6px;border-bottom:1px solid #222;">Authentication required</div>
       <div style="font-size:11px;color:#555;margin-bottom:8px;">Enter password to continue</div>
@@ -242,6 +242,10 @@
       <div id="pw-error" style="font-size:10px;color:#c85300;margin-bottom:8px;display:none;">incorrect password</div>
       <button onclick="checkPassword()" style="width:100%;padding:7px 0;background:#1e1e1e;border:1px solid #333;color:#ccc;font-family:Arial,sans-serif;font-size:11px;cursor:pointer;letter-spacing:0.06em;transition:background 0.15s,border-color 0.15s;" onmouseover="this.style.borderColor='#00c853';this.style.color='#00c853'" onmouseout="this.style.borderColor='#333';this.style.color='#ccc'">Login</button>
     </div>
+  </div>
+
+  <div id="baldi-overlay" style="display:none;position:fixed;inset:0;z-index:99999;cursor:pointer;background:#000;" onclick="this.style.display='none'" title="click to close">
+    <img src="baldi.gif" style="width:100vw;height:100vh;object-fit:fill;display:block;">
   </div>
 
   <div id="rat-overlay" style="display:none;position:fixed;inset:0;z-index:9999;cursor:pointer;" onclick="this.style.display='none'" title="click to close">
@@ -260,7 +264,8 @@
         <span style="color:#555">[ x ]</span>
       </div>
       <div class="rainbow-bar"></div>
-      <!-- goons tab -->
+
+      <!-- GAMES TAB -->
       <div id="tab-games" class="tab-content active">
         <div class="grid">
           <div class="panel">
@@ -275,9 +280,9 @@
           </div>
 
           <div class="panel">
-            <div class="panel-title">game selection</div>
+            <div class="panel-title">Game selection</div>
             <div class="game-list">
-              <div class="game-item selected" onclick="selectGame(this, 'EaglercraftX_1.8_u53_Offline_Signed.html')">eagle minecraft craft</div>
+              <div class="game-item selected" onclick="selectGame(this, 'html/EaglercraftX_1.8_u53_Offline_Signed.html')">eagle minecraft craft</div>
               <div class="game-item" onclick="selectGame(this, 'html/doom.html')">doom</div>
               <div class="game-item" onclick="selectGame(this, 'html/fnae.html')">fnae</div>
               <div class="game-item" onclick="selectGame(this, 'html/bitlife.html')">bitlife</div>
@@ -290,16 +295,16 @@
           </div>
 
           <div class="panel">
-            <div class="panel-title">options</div>
-            <button class="btn" onclick="loadGame()">load game</button>
-            <button class="btn" onclick="showRat()">exit</button>
+            <div class="panel-title">Options</div>
+            <button class="btn" onclick="loadGame()">Load game</button>
+            <button class="btn" onclick="showRat()">Exit</button>
           </div>
 
           <div class="panel">
-            <div class="panel-title">status</div>
+            <div class="panel-title">Status</div>
             <div class="panel-content">
-              <span class="white">connected</span><br>
-              <span class="yellow">your session expires in never because i havent added this yet</span>
+              <span class="white">Connected</span><br>
+              <span class="yellow">Your session expires in never because i havent added this yet</span>
             </div>
           </div>
         </div>
@@ -309,10 +314,10 @@
       <div id="tab-emulation" class="tab-content">
         <div class="grid">
           <div class="panel">
-            <div class="panel-title">emulator information</div>
+            <div class="panel-title">Emulator information</div>
             <div class="panel-content" id="emu-info">
-              <span class="white">flash (SWF)</span><br>
-              <span class="green">powered by Ruffle</span>
+              <span class="white">Flash (SWF)</span><br>
+              <span class="green">Powered by Ruffle</span>
             </div>
           </div>
 
@@ -357,6 +362,9 @@
 
   <div id="yu-popup" style="display:none;position:fixed;bottom:32px;left:10px;z-index:9999;background:#111;border:1px solid #2a2a2a;padding:8px;box-shadow:0 0 20px rgba(0,0,0,0.8);">
     <div style="font-size:9px;color:#555;letter-spacing:0.1em;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #222;">SELECT INSTANCE</div>
+    <a href="https://inv.nadeko.net/feed/popular" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">inv.nadeko.net</a>
+    <a href="https://invidious.nerdvpn.de/" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">invidious.nerdvpn.de</a>
+    <a href="https://docs.invidious.io/instances/" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">all instances</a>
     <a href="https://yt.chocolatemoo53.com/" target="_blank" style="display:block;font-size:10px;color:#00c853;text-decoration:none;padding:3px 0;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#00c853'">yt.chocolatemoo53.com</a>
   </div>
   <button onclick="toggleYu()" style="position:fixed;bottom:10px;left:10px;z-index:9999;background:#111;border:1px solid #2a2a2a;color:#555;font-family:Arial,sans-serif;font-size:9px;padding:3px 7px;cursor:pointer;letter-spacing:0.05em;transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#00c853';this.style.borderColor='#00c853'" onmouseout="this.style.color='#555';this.style.borderColor='#2a2a2a'">yu</button>
@@ -436,6 +444,11 @@
 
     function checkPassword() {
       const input = document.getElementById('pw-input').value;
+      if (input.toLowerCase() === 'josh') {
+        document.getElementById('password-overlay').style.display = 'none';
+        document.getElementById('baldi-overlay').style.display = 'block';
+        return;
+      }
       if (input.toUpperCase() === 'JEW') {
         const overlay = document.getElementById('password-overlay');
         overlay.style.transition = 'opacity 0.4s ease';
