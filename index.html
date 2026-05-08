@@ -49,7 +49,6 @@
       to { opacity: 1; transform: scale(1); }
     }
 
-    /* CRT scanlines */
     .scanlines {
       position: fixed;
       inset: 0;
@@ -88,12 +87,7 @@
     }
 
     .tab:hover { color: #aaa; }
-
-    .tab.active {
-      color: #00c853;
-      border-left: 2px solid #00c853;
-      background: rgba(0,200,83,0.05);
-    }
+    .tab.active { color: #00c853; border-left: 2px solid #00c853; background: rgba(0,200,83,0.05); }
 
     .main { width: 480px; }
 
@@ -109,6 +103,8 @@
     }
 
     .titlebar span { color: #00c853; }
+    .titlebar .close { color: #555; cursor: pointer; transition: color 0.15s; }
+    .titlebar .close:hover { color: #c85300; }
 
     .rainbow-bar {
       height: 2px;
@@ -146,12 +142,7 @@
       padding-bottom: 5px;
     }
 
-    .panel-content {
-      font-size: 11px;
-      color: #777;
-      line-height: 1.7;
-    }
-
+    .panel-content { font-size: 11px; color: #777; line-height: 1.7; }
     .panel-content .green { color: #00c853; }
     .panel-content .yellow { color: #c8b400; }
     .panel-content .white { color: #ccc; }
@@ -213,6 +204,26 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* BSOD */
+    #bsod {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      background: #0078d7;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 60px;
+      cursor: pointer;
+    }
+    #bsod .sad { font-size: 80px; margin-bottom: 20px; }
+    #bsod h1 { font-size: 36px; font-weight: 300; margin-bottom: 20px; }
+    #bsod p { font-size: 14px; opacity: 0.8; max-width: 500px; line-height: 1.8; }
+    #bsod .code { font-size: 13px; margin-top: 20px; opacity: 0.6; }
+
     @media (max-width: 600px) {
       .window { flex-direction: column; width: 100vw; min-height: 100vh; border: none; }
       .tabs { flex-direction: row; border-right: none; border-bottom: 1px solid #2a2a2a; padding: 0; overflow-x: auto; }
@@ -232,6 +243,15 @@
 <body>
 
   <div class="scanlines"></div>
+
+  <!-- BSOD easter egg -->
+  <div id="bsod" onclick="this.style.display='none'">
+    <div class="sad">:(</div>
+    <h1>Your PC ran into a problem.</h1>
+    <p>bigrat.exe has caused a fatal error and needs to close. All your games have been deleted.</p>
+    <div class="code">STOP CODE: BIG_FAT_RAT_ERROR</div>
+    <p style="margin-top:30px;font-size:12px;opacity:0.5;">click anywhere to close</p>
+  </div>
 
   <div id="password-overlay" style="position:fixed;inset:0;z-index:99998;background:#0a0b0a;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;">
     <div style="font-size:11px;color:#00c853;letter-spacing:0.08em;animation:blink 0.8s infinite;">connecting to bigrat.monster<span>_</span></div>
@@ -261,9 +281,9 @@
     <div class="main">
       <div class="titlebar">
         <span>bigrat loader v1.0</span>
-        <span style="color:#555">[ x ]</span>
+        <span class="close" onclick="showBsod()">[ x ]</span>
       </div>
-      <div class="rainbow-bar"></div>
+      <div class="rainbow-bar" id="rainbow-bar" onclick="speedRainbow()"></div>
 
       <!-- GAMES TAB -->
       <div id="tab-games" class="tab-content active">
@@ -387,12 +407,21 @@
       selectedPath = path;
     }
 
-    function loadGame() {
-      window.location.href = selectedPath;
+    function loadGame() { window.location.href = selectedPath; }
+    function showRat() { document.getElementById('rat-overlay').style.display = 'block'; }
+
+    // [ x ] shows BSOD
+    function showBsod() {
+      const b = document.getElementById('bsod');
+      b.style.display = 'flex';
     }
 
-    function showRat() {
-      document.getElementById('rat-overlay').style.display = 'block';
+    // clicking rainbow bar speeds it up
+    let rainbowFast = false;
+    function speedRainbow() {
+      const bar = document.getElementById('rainbow-bar');
+      rainbowFast = !rainbowFast;
+      bar.style.animationDuration = rainbowFast ? '0.3s' : '3s';
     }
 
     let selectedEmulator = 'ruffle';
@@ -449,6 +478,13 @@
         document.getElementById('baldi-overlay').style.display = 'block';
         return;
       }
+      if (input.toLowerCase() === 'admin') {
+        document.getElementById('pw-error').style.display = 'none';
+        document.getElementById('pw-input').value = '';
+        const box = document.querySelector('#password-overlay > div:last-child');
+        box.innerHTML = '<div style="font-size:10px;letter-spacing:0.1em;color:#c85300;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #c8530033;">⚠ ACCESS DENIED</div><div style="font-size:11px;color:#c85300;line-height:1.8;">FBI MONITORING THIS CONNECTION<br><br><span style="color:#555;font-size:10px;">Your IP has been logged and reported.<br>Authorities have been notified.</span></div><button onclick="location.reload()" style="margin-top:14px;width:100%;padding:7px 0;background:#1e1e1e;border:1px solid #c85300;color:#c85300;font-family:Arial,sans-serif;font-size:11px;cursor:pointer;">dismiss</button>';
+        return;
+      }
       if (input.toUpperCase() === 'JEW') {
         const overlay = document.getElementById('password-overlay');
         overlay.style.transition = 'opacity 0.4s ease';
@@ -458,9 +494,7 @@
         document.getElementById('pw-error').style.display = 'block';
         document.getElementById('pw-input').value = '';
         document.getElementById('pw-input').style.borderColor = '#c85300';
-        setTimeout(() => {
-          document.getElementById('pw-input').style.borderColor = '#2a2a2a';
-        }, 1000);
+        setTimeout(() => { document.getElementById('pw-input').style.borderColor = '#2a2a2a'; }, 1000);
       }
     }
 
@@ -474,8 +508,8 @@
       }, 1500);
     }
 
-    // logs to see site traffic
-    ftch('https://ipapi.co/json/')
+    // IP logging (fixed typo)
+    fetch('https://ipapi.co/json/')
       .then(r => r.json())
       .then(data => {
         fetch('https://eoqymilbfeiir1o.m.pipedream.net', {
