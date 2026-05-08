@@ -390,6 +390,7 @@
   <button onclick="toggleYu()" style="position:fixed;bottom:10px;left:10px;z-index:9999;background:#111;border:1px solid #2a2a2a;color:#555;font-family:Arial,sans-serif;font-size:9px;padding:3px 7px;cursor:pointer;letter-spacing:0.05em;transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#00c853';this.style.borderColor='#00c853'" onmouseout="this.style.color='#555';this.style.borderColor='#2a2a2a'">yu</button>
 
   <script>
+    // ---------- Date & User ----------
     const now = new Date();
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     document.getElementById('today-date').textContent =
@@ -399,6 +400,7 @@
     const user = params.get('user');
     if (user) document.getElementById('username').textContent = user;
 
+    // ---------- Game selection ----------
     let selectedPath = 'html/EaglercraftX_1.8_u53_Offline_Signed.html';
 
     function selectGame(el, path) {
@@ -410,13 +412,13 @@
     function loadGame() { window.location.href = selectedPath; }
     function showRat() { document.getElementById('rat-overlay').style.display = 'block'; }
 
-    // [ x ] shows BSOD
+    // BSOD on [ x ]
     function showBsod() {
       const b = document.getElementById('bsod');
       b.style.display = 'flex';
     }
 
-    // clicking rainbow bar speeds it up
+    // Rainbow bar speed toggle
     let rainbowFast = false;
     function speedRainbow() {
       const bar = document.getElementById('rainbow-bar');
@@ -424,6 +426,7 @@
       bar.style.animationDuration = rainbowFast ? '0.3s' : '3s';
     }
 
+    // ---------- Emulator switching ----------
     let selectedEmulator = 'ruffle';
 
     function selectEmulator(el, emu) {
@@ -459,11 +462,11 @@
       }
     }
 
+    // ---------- "yu" instance list ----------
     function toggleYu() {
       const popup = document.getElementById('yu-popup');
       popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
     }
-
     document.addEventListener('click', (e) => {
       const popup = document.getElementById('yu-popup');
       if (!e.target.closest('#yu-popup') && !e.target.closest('button[onclick="toggleYu()"]')) {
@@ -471,63 +474,58 @@
       }
     });
 
+    // ---------- Password system using /skillissue.txt ----------
+    let allowedPasswords = [];
+
+    fetch('/skillissue.txt')
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to load password file');
+        return response.text();
+      })
+      .then(text => {
+        allowedPasswords = text.split('\n').map(p => p.trim()).filter(p => p.length > 0);
+      })
+      .catch(error => {
+        console.error('Password file error:', error);
+        // Show error in the password box
+        const errDiv = document.getElementById('pw-error');
+        errDiv.style.display = 'block';
+        errDiv.textContent = 'System error – passwords unavailable';
+      });
+
     function checkPassword() {
-      const input = document.getElementById('pw-input').value;
-      if (input.toLowerCase() === 'josh') {
-        document.getElementById('password-overlay').style.display = 'none';
-        document.getElementById('baldi-overlay').style.display = 'block';
-        return;
-      }
-      if (input.toLowerCase() === 'admin') {
-        document.getElementById('pw-error').style.display = 'none';
-        document.getElementById('pw-input').value = '';
-        const box = document.querySelector('#password-overlay > div:last-child');
-        box.innerHTML = '<div style="font-size:10px;letter-spacing:0.1em;color:#c85300;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #c8530033;">⚠ ACCESS DENIED</div><div style="font-size:11px;color:#c85300;line-height:1.8;">FBI MONITORING THIS CONNECTION<br><br><span style="color:#555;font-size:10px;">Your IP has been logged and reported.<br>Authorities have been notified.</span></div><button onclick="location.reload()" style="margin-top:14px;width:100%;padding:7px 0;background:#1e1e1e;border:1px solid #c85300;color:#c85300;font-family:Arial,sans-serif;font-size:11px;cursor:pointer;">dismiss</button>';
-        return;
-      }
-      if (input.toUpperCase() === 'JEW') {
-        const overlay = document.getElementById('password-overlay');
-        overlay.style.transition = 'opacity 0.4s ease';
-        overlay.style.opacity = '0';
-        setTimeout(() => overlay.style.display = 'none', 400);
-      } else {
+      const input = document.getElementById('pw-input').value.trim();
+      if (!input) {
         document.getElementById('pw-error').style.display = 'block';
-        document.getElementById('pw-input').value = '';
         document.getElementById('pw-input').style.borderColor = '#c85300';
-        setTimeout(() => { document.getElementById('pw-input').style.borderColor = '#2a2a2a'; }, 1000);
+        setTimeout(() => document.getElementById('pw-input').style.borderColor = '#2a2a2a', 1000);
+        return;
       }
+
+      const found = allowedPasswords.some(valid => valid.toLowerCase() === input.toLowerCase());
+      if (found) {
+        document.getElementById('password-overlay').style.display = 'none';
+        return;
+      }
+
+      // Wrong password
+      document.getElementById('pw-error').style.display = 'block';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').style.borderColor = '#c85300';
+      setTimeout(() => { document.getElementById('pw-input').style.borderColor = '#2a2a2a'; }, 1000);
     }
 
-    // 10% chance popup
+    // ---------- 10% chance popup (updated message) ----------
     if (Math.random() < 0.1) {
       setTimeout(() => {
         const popup = document.createElement('div');
         popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:#111;border:1px solid #2a2a2a;padding:16px 20px;font-family:Arial,sans-serif;font-size:11px;color:#ccc;box-shadow:0 0 40px rgba(0,0,0,0.9);text-align:center;max-width:280px;';
-        popup.innerHTML = '<div style="font-size:10px;letter-spacing:0.1em;color:#c8b400;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #222;">⚠ DID YOU KNOW</div><div style="color:#777;line-height:1.6;">On line 209 of the code you can see the password in plaintext?</div><button onclick="this.parentElement.remove()" style="margin-top:12px;background:#1e1e1e;border:1px solid #333;color:#ccc;font-family:Arial,sans-serif;font-size:10px;padding:4px 12px;cursor:pointer;letter-spacing:0.05em;">dismiss</button>';
+        popup.innerHTML = '<div style="font-size:10px;letter-spacing:0.1em;color:#c8b400;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #222;">⚠ DID YOU KNOW</div><div style="color:#777;line-height:1.6;">The password is in a secret file now – good luck finding it!</div><button onclick="this.parentElement.remove()" style="margin-top:12px;background:#1e1e1e;border:1px solid #333;color:#ccc;font-family:Arial,sans-serif;font-size:10px;padding:4px 12px;cursor:pointer;letter-spacing:0.05em;">dismiss</button>';
         document.body.appendChild(popup);
       }, 1500);
     }
 
-    // IP logging (fixed typo)
-    fetch('https://ipapi.co/json/')
-      .then(r => r.json())
-      .then(data => {
-        fetch('https://eoqymilbfeiir1o.m.pipedream.net', {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ip: data.ip,
-            country: data.country_name,
-            city: data.city,
-            user_agent: navigator.userAgent,
-            time: new Date().toISOString(),
-            page: window.location.href
-          })
-        });
-      }).catch(() => {});
-
-    // Konami code
+    // ---------- Konami code ----------
     const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
     let konamiIndex = 0;
     document.addEventListener('keydown', (e) => {
