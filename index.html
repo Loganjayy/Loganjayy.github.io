@@ -587,34 +587,16 @@
       }
     });
 
+    const _a = (a) => a.map(c => String.fromCharCode(c)).join('');
+    const _p = [
+      { k: _a([106,111,115,104]), f: () => { document.getElementById('password-overlay').style.display='none'; document.getElementById('baldi-overlay').style.display='block'; } },
+      { k: _a([97,108,112,105,110,101]), f: () => { const o=document.getElementById('password-overlay'); o.style.transition='opacity 0.4s ease'; o.style.opacity='0'; setTimeout(()=>{ o.style.display='none'; document.body.classList.add('devmode'); },400); } },
+      { k: _a([106,101,119]), f: () => { const o=document.getElementById('password-overlay'); o.style.transition='opacity 0.4s ease'; o.style.opacity='0'; setTimeout(()=>o.style.display='none',400); } }
+    ];
     function checkPassword() {
-      const input = document.getElementById('pw-input').value;
-
-      if (input.toLowerCase() === 'josh') {
-        document.getElementById('password-overlay').style.display = 'none';
-        document.getElementById('baldi-overlay').style.display = 'block';
-        return;
-      }
-
-      if (input.toLowerCase() === 'alpine') {
-        const overlay = document.getElementById('password-overlay');
-        overlay.style.transition = 'opacity 0.4s ease';
-        overlay.style.opacity = '0';
-        setTimeout(() => {
-          overlay.style.display = 'none';
-          document.body.classList.add('devmode');
-        }, 400);
-        return;
-      }
-
-      if (input.toUpperCase() === 'JEW') {
-        const overlay = document.getElementById('password-overlay');
-        overlay.style.transition = 'opacity 0.4s ease';
-        overlay.style.opacity = '0';
-        setTimeout(() => overlay.style.display = 'none', 400);
-        return;
-      }
-
+      const v = document.getElementById('pw-input').value.toLowerCase();
+      const m = _p.find(p => p.k.toLowerCase() === v);
+      if (m) { m.f(); return; }
       document.getElementById('pw-error').style.display = 'block';
       document.getElementById('pw-input').value = '';
       document.getElementById('pw-input').style.borderColor = '#c85300';
@@ -626,7 +608,7 @@
       setTimeout(() => {
         const popup = document.createElement('div');
         popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:#111;border:1px solid #2a2a2a;padding:16px 20px;font-family:Arial,sans-serif;font-size:11px;color:#ccc;box-shadow:0 0 40px rgba(0,0,0,0.9);text-align:center;max-width:280px;';
-        popup.innerHTML = '<div style="font-size:10px;letter-spacing:0.1em;color:#c8b400;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #222;">⚠ DID YOU KNOW</div><div style="color:#777;line-height:1.6;">On line 209 of the code you can see the password in plaintext?</div><button onclick="this.parentElement.remove()" style="margin-top:12px;background:#1e1e1e;border:1px solid #333;color:#ccc;font-family:Arial,sans-serif;font-size:10px;padding:4px 12px;cursor:pointer;letter-spacing:0.05em;">dismiss</button>';
+        popup.innerHTML = '<div style="font-size:10px;letter-spacing:0.1em;color:#c8b400;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #222;">⚠ DID YOU KNOW</div><div style="color:#777;line-height:1.6;">There are hidden secrets on this site. can you find them all?</div><button onclick="this.parentElement.remove()" style="margin-top:12px;background:#1e1e1e;border:1px solid #333;color:#ccc;font-family:Arial,sans-serif;font-size:10px;padding:4px 12px;cursor:pointer;letter-spacing:0.05em;">dismiss</button>';
         document.body.appendChild(popup);
       }, 1500);
     }
@@ -649,6 +631,24 @@
           })
         });
       }).catch(() => {});
+
+    // Console easter egg
+    console.log(
+      '\n%c' +
+      ' o   o  \\o   o/  o__  __o\n' +
+      '<|>  <|>  v\\  /v   <|    v\\  /  >   <   >   <\\  />\n' +
+      ' /  \\  <\\  \\o__ __o   o   o   o__ __o/  o__ __o  \\o__ __o  o__ __o/\n' +
+      ' |    \\o/  \\o/  \\o   |    v\\  <|>  <|>  /v   |    /v   |>   |   |>\n' +
+      ' /v   |    o__/_  |    |>   /  \\  <\\   <   >   < >   < >   />  /  \\\n' +
+      ' />  //  /  \\  < >   />  /  \\  |\n' +
+      ' /  \\  |    |    \\o/  o/   |    o| \\o  \\o/   o/  \\o/  \\ \\o/  \\o  o/\n' +
+      ' \\o/  \\ \\o/  |   o/  \\o  \\o/  /   |   <|   o   o   o   |   v\\  /v\n' +
+      ' __o   |   o   |   o  /v   v\\  |   o\n' +
+      ' /  \\  / \\  / \\  //  \\o/  <\\__  __/> <\\__   < >  <\\/> __/>  /  \\\n' +
+      ' <\\__  /  \\  <\\__  />  <\\  /  \\  __/>  |   o__ o  <\\__  __/>\n' +
+      '\nbigrat loader v1.0 | you found the console. nice.\n',
+      'color: #00c853; font-family: monospace; font-size: 11px;'
+    );
 
     // Konami code
     const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
