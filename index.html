@@ -384,6 +384,7 @@
               <div class="game-item" onclick="selectGame(this, 'html/slope.html')">slop</div>
               <div class="game-item" onclick="selectGame(this, 'html/supermario64.html')">super mario 64</div>
               <div class="game-item" onclick="selectGame(this, 'html/baldi.html')">baldi (BROKEN)</div>
+              <div class="game-item" onclick="selectGame(this, '/images.html')">the images on the repo</div>
             </div>
           </div>
 
@@ -614,25 +615,6 @@
         document.body.appendChild(popup);
       }, 1500);
     }
-
-    // IP logging
-    fetch('https://ipapi.co/json/')
-      .then(r => r.json())
-      .then(data => {
-        fetch('https://eoqymilbfeiir1o.m.pipedream.net', {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ip: data.ip,
-            country: data.country_name,
-            city: data.city,
-            user_agent: navigator.userAgent,
-            time: new Date().toISOString(),
-            page: window.location.href
-          })
-        });
-      }).catch(() => {});
 
     // Console easter egg
     console.log(
