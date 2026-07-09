@@ -1,0 +1,35 @@
+<p> adam the adam</p>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>POST Request Example</title>
+</head>
+<body>
+  <button onclick="sendPost()">Send POST</button>
+  <pre id="result"></pre>
+
+  <script>
+    async function sendPost() {
+      try {
+        const response = await fetch('https://eoqymilbfeiir1o.m.pipedream.net/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: 'Hello from HTML page',
+            timestamp: new Date().toISOString()
+          })
+        });
+
+        const data = await response.text();
+        document.getElementById('result').textContent = 
+          `Status: ${response.status}\nResponse: ${data}`;
+      } catch (error) {
+        document.getElementById('result').textContent = `Error: ${error.message}`;
+      }
+    }
+  </script>
+</body>
+</html>
