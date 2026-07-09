@@ -3,14 +3,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>POST Request Example</title>
+  <title>form</title>
 </head>
 <body>
-  <button onclick="sendPost()">Send POST</button>
+  <form id="nameForm">
+    <label for="name">name:</label>
+    <input type="text" id="name" name="name" required>
+    <button type="submit">submit</button>
+  </form>
   <pre id="result"></pre>
 
   <script>
-    async function sendPost() {
+    document.getElementById('nameForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+
       try {
         const response = await fetch('https://eoqymilbfeiir1o.m.pipedream.net/', {
           method: 'POST',
@@ -18,18 +26,18 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            message: 'Hello from HTML page',
+            name: name,
             timestamp: new Date().toISOString()
           })
         });
 
         const data = await response.text();
-        document.getElementById('result').textContent = 
+        document.getElementById('result').textContent =
           `Status: ${response.status}\nResponse: ${data}`;
       } catch (error) {
         document.getElementById('result').textContent = `Error: ${error.message}`;
       }
-    }
+    });
   </script>
 </body>
 </html>
