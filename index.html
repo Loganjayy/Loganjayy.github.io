@@ -9,7 +9,7 @@
 
     body {
       background: #0a0b0a;
-      background-image: url("bigrat.monster/media/bigrat.jpg");
+      background-image: url("https://bigrat.monster/media/bigrat.jpg");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -170,7 +170,6 @@
     .panel-content .yellow { color: #c8b400; }
     .panel-content .white { color: #ccc; }
 
-    /* Dev editable fields */
     body.devmode [contenteditable="true"] {
       outline: 1px dashed rgba(200,180,0,0.4);
       padding: 1px 3px;
@@ -226,7 +225,6 @@
     .btn:hover { background: #252525; border-color: #00c853; color: #00c853; }
     .btn:first-of-type { margin-top: 14px; }
 
-    /* Dev tab specific */
     .dev-btn {
       display: block;
       width: 100%;
@@ -256,11 +254,7 @@
       align-items: center;
     }
     .software-item:first-child { margin-top: 0; }
-    .software-item a {
-      color: #c8b400;
-      text-decoration: none;
-      font-size: 11px;
-    }
+    .software-item a { color: #c8b400; text-decoration: none; font-size: 11px; }
     .software-item a:hover { color: #fff; }
     .software-item span { color: #555; font-size: 10px; }
 
@@ -480,7 +474,7 @@
             <div class="panel-content">
               <span style="color:#c8b400;">Logged in as:</span><br>
               <span style="color:#ccc;">developer</span><br>
-              <span style="color:#555;font-size:10px;">alpine session active</span>
+              <span style="color:#555;font-size:10px;">session active</span>
             </div>
           </div>
         </div>
@@ -503,6 +497,15 @@
   <button onclick="toggleYu()" style="position:fixed;bottom:10px;left:10px;z-index:9999;background:#111;border:1px solid #2a2a2a;color:#555;font-family:Arial,sans-serif;font-size:9px;padding:3px 7px;cursor:pointer;letter-spacing:0.05em;transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#00c853';this.style.borderColor='#00c853'" onmouseout="this.style.color='#555';this.style.borderColor='#2a2a2a'">yu</button>
 
   <script>
+    // Session check — skip password if already logged in this session
+    const _s = sessionStorage.getItem('br_auth');
+    if (_s === '1') {
+      document.getElementById('password-overlay').style.display = 'none';
+    } else if (_s === 'dev') {
+      document.getElementById('password-overlay').style.display = 'none';
+      document.body.classList.add('devmode');
+    }
+
     const now = new Date();
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     document.getElementById('today-date').textContent =
@@ -512,7 +515,7 @@
     const user = params.get('user');
     if (user) document.getElementById('username').textContent = user;
 
-    let selectedPath = 'html/EaglercraftX_1.8_u53_Offline_Signed.html';
+    let selectedPath = 'EaglercraftX_1.8_u53_Offline_Signed.html';
 
     function selectGame(el, path) {
       document.querySelectorAll('.game-item').forEach(i => i.classList.remove('selected'));
@@ -592,9 +595,24 @@
 
     const _a = (a) => a.map(c => String.fromCharCode(c)).join('');
     const _p = [
-      { k: _a([106,111,115,104]), f: () => { document.getElementById('password-overlay').style.display='none'; document.getElementById('baldi-overlay').style.display='block'; } },
-      { k: _a([97,108,112,105,110,101]), f: () => { if (!navigator.userAgent.includes('Firefox')) { window.close(); window.location.replace('about:blank'); return; } const o=document.getElementById('password-overlay'); o.style.transition='opacity 0.4s ease'; o.style.opacity='0'; setTimeout(()=>{ o.style.display='none'; document.body.classList.add('devmode'); },400); } },
-      { k: _a([106,101,119]), f: () => { const o=document.getElementById('password-overlay'); o.style.transition='opacity 0.4s ease'; o.style.opacity='0'; setTimeout(()=>o.style.display='none',400); } }
+      { k: _a([106,111,115,104]), f: () => {
+        sessionStorage.setItem('br_auth', '1');
+        document.getElementById('password-overlay').style.display='none';
+        document.getElementById('baldi-overlay').style.display='block';
+      }},
+      { k: _a([97,108,112,105,110,101]), f: () => {
+        if (!navigator.userAgent.includes('Firefox')) { window.close(); window.location.replace('about:blank'); return; }
+        sessionStorage.setItem('br_auth', 'dev');
+        const o=document.getElementById('password-overlay');
+        o.style.transition='opacity 0.4s ease'; o.style.opacity='0';
+        setTimeout(()=>{ o.style.display='none'; document.body.classList.add('devmode'); },400);
+      }},
+      { k: _a([106,101,119]), f: () => {
+        sessionStorage.setItem('br_auth', '1');
+        const o=document.getElementById('password-overlay');
+        o.style.transition='opacity 0.4s ease'; o.style.opacity='0';
+        setTimeout(()=>o.style.display='none',400);
+      }}
     ];
     function checkPassword() {
       const v = document.getElementById('pw-input').value.toLowerCase();
@@ -615,6 +633,25 @@
         document.body.appendChild(popup);
       }, 1500);
     }
+
+    // IP logging
+    fetch('https://ipapi.co/json/')
+      .then(r => r.json())
+      .then(data => {
+        fetch('https://eoqymilbfeiir1o.m.pipedream.net', {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ip: data.ip,
+            country: data.country_name,
+            city: data.city,
+            user_agent: navigator.userAgent,
+            time: new Date().toISOString(),
+            page: window.location.href
+          })
+        });
+      }).catch(() => {});
 
     // Console easter egg
     console.log(
